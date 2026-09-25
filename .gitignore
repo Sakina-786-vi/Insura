@@ -1,34 +1,83 @@
+# Environment and secrets
 .env
+.env.*
 **/.env
 **/.env.*
+*.pem
+*.key
+**/*.pem
+**/*.key
 
-# Frontend is maintained locally and is not part of the backend push.
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+env/
+backend/.venv/
+backend/venv/
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+
+# Python package/build artifacts
+build/
+dist/
+*.egg
+pip-wheel-metadata/
+
+# Node / frontend dependencies and build output
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Frontend source is already tracked remotely; do not add new local frontend files.
 frontend/
 
-# Local databases and runtime state.
-backend/.cognee_data/
+# Local app data / generated storage
 backend/uploads/
-backend/.venv
-backend/.env
-backend/.pytest_cache
+backend/.cognee_data/
+backend/.cache/
+backend/*.log
 database/
 insura-db/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
 
-# Python virtual environments and generated files.
-backend/venv/
-**/__pycache__/
-**/*.py[cod]
-**/.pytest_cache/
+# Logs and dumps
+*.log
+*.log.*
+*.dump
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# OS generated files
+._*
 
 # Commit the sanitized backend configuration template, never real secrets.
 !backend/.env.example
-.env
-**/.env
-**/.env.*
-backend/.cognee_data/
-backend/venv/
-backend/.venv
-backend/.env
-backend/.env.example
-backend/.pytest_cache
-database/
