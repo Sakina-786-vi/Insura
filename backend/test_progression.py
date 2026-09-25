@@ -35,6 +35,36 @@ def test_user_progress_update_repairs_missing_created_at(monkeypatch):
     assert result["user_id"] == "user_1"
 
 
+def test_sync_progress_preserves_stored_surreal_values_without_derived_rows(monkeypatch):
+    import app
+    import database
+
+    stored_progress = {
+        "id": "user_progress:one",
+        "user_id": "user_1",
+        "xp": 130,
+        "streak": 4,
+        "readiness": 17,
+        "completed_levels": 13,
+        "badges": ["Policy Starter"],
+    }
+
+    monkeypatch.setattr(app, "get_user_progress", lambda user_id: stored_progress)
+    monkeypatch.setattr(app, "get_latest_user_policy", lambda user_id: None)
+    monkeypatch.setattr(app, "get_simulation_completions_for_user", lambda user_id: [])
+    monkeypatch.setattr(app, "get_badges_for_user", lambda user_id: [])
+    monkeypatch.setattr(database.db, "select", lambda table: [])
+    monkeypatch.setattr(app, "create_or_update_user_progress", lambda user_id, payload: payload)
+
+    snapshot = app.sync_user_progress_state("user_1")
+
+    assert snapshot["xp"] == 130
+    assert snapshot["streak"] == 4
+    assert snapshot["readiness"] == 17
+    assert snapshot["completed_levels"] == 13
+    assert snapshot["badges"] == ["Policy Starter"]
+
+
 def test_resolve_deduplicated_policy_record_uses_stored_policy_data(monkeypatch):
     stored_policy = {
         "id": "policy_analysis:stored",

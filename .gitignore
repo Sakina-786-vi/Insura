@@ -1,7 +1,32 @@
 .env
 **/.env
 **/.env.*
+
+# Frontend is maintained locally and is not part of the backend push.
+frontend/
+
+# Local databases and runtime state.
 backend/.cognee_data/
+backend/uploads/
+backend/.venv
+backend/.env
+backend/.pytest_cache
+database/
+insura-db/
+
+# Python virtual environments and generated files.
+backend/venv/
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+
+# Commit the sanitized backend configuration template, never real secrets.
+!backend/.env.example
+.env
+**/.env
+**/.env.*
+backend/.cognee_data/
+backend/venv/
 backend/.venv
 backend/.env
 backend/.env.example

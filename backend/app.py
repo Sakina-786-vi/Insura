@@ -409,12 +409,17 @@ def handle_progression_activity(user_id, activity_type, activity_id, current_sna
 def sync_user_progress_state(user_id):
     user_id = str(user_id)
     db = __import__("database").db
+    stored_progress = get_user_progress(user_id) or {}
 
-    xp_total = 0
-    for transaction in db.select("xp_transaction") or []:
-        if str(transaction.get("user_id", "")) == user_id:
-            xp_total += int(transaction.get("xp_amount", 0) or 0)
-    xp_total = max(0, xp_total)
+    user_transactions = [
+        transaction
+        for transaction in db.select("xp_transaction") or []
+        if str(transaction.get("user_id", "")) == user_id
+    ]
+    if user_transactions:
+        xp_total = max(0, sum(int(transaction.get("xp_amount", 0) or 0) for transaction in user_transactions))
+    else:
+        xp_total = max(0, int(stored_progress.get("xp", 0) or 0))
 
     policy_record = get_latest_user_policy(user_id)
     all_learning_completions = []
@@ -423,9 +428,7 @@ def sync_user_progress_state(user_id):
             all_learning_completions.append(completion)
     simulation_completions = get_simulation_completions_for_user(user_id)
     completion_keys = {str(item.get("completion_key")) for item in all_learning_completions if item.get("completion_key")}
-    for transaction in db.select("xp_transaction") or []:
-        if str(transaction.get("user_id", "")) != user_id:
-            continue
+    for transaction in user_transactions:
         if str(transaction.get("activity_type", "")) not in {"learning_question_correct", "learning_scenario"}:
             continue
         activity_id = str(transaction.get("activity_id", ""))
@@ -437,16 +440,30 @@ def sync_user_progress_state(user_id):
             })
             completion_keys.add(activity_id)
     readiness_activities = all_learning_completions + simulation_completions
-    readiness = compute_user_readiness(
-        has_policy=bool(policy_record),
-        learning_completions=readiness_activities,
-        total_levels=max(1, len(all_learning_completions) or 5),
-    )
+    if readiness_activities:
+        readiness = compute_user_readiness(
+            has_policy=bool(policy_record),
+            learning_completions=readiness_activities,
+            total_levels=max(1, len(all_learning_completions) or 5),
+        )
+    elif policy_record:
+        readiness = max(
+            int(stored_progress.get("readiness", 0) or 0),
+            compute_user_readiness(has_policy=True, learning_completions=[], total_levels=5),
+        )
+    else:
+        readiness = int(stored_progress.get("readiness", 0) or 0)
+
     completed_levels = len({str(item.get("completion_key", "")) for item in all_learning_completions if item.get("completion_key")})
+    if not all_learning_completions:
+        completed_levels = int(stored_progress.get("completed_levels", 0) or 0)
     activity_dates = [item.get("completed_at") for item in readiness_activities if item.get("completed_at")]
-    activity_dates.extend(item.get("created_at") for item in db.select("xp_transaction") or [] if str(item.get("user_id", "")) == user_id)
-    streak = compute_user_streak(activity_dates)
+    activity_dates.extend(item.get("created_at") for item in user_transactions if item.get("created_at"))
+    streak = compute_user_streak(activity_dates) if activity_dates else int(stored_progress.get("streak", 0) or 0)
+    stored_badges = stored_progress.get("badges") or []
     badge_names = [str(item.get("name", "")) for item in get_badges_for_user(user_id) if item.get("name")]
+    if not badge_names:
+        badge_names = [str(item.get("name", item)) if isinstance(item, dict) else str(item) for item in stored_badges]
     payload = {
         "user_id": user_id,
         "xp": int(xp_total),
