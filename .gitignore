@@ -1,0 +1,73 @@
+# Environment and secrets
+.env
+.env.*
+**/.env
+**/.env.*
+*.pem
+*.key
+**/*.pem
+**/*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+
+# Python package/build artifacts
+build/
+dist/
+*.egg
+pip-wheel-metadata/
+
+# Node / frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local app data / generated storage
+backend/uploads/
+backend/.cognee_data/
+backend/.cache/
+backend/*.log
+database/
+insura-db/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# Logs and dumps
+*.log
+*.log.*
+*.dump
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# OS generated files
+._*
