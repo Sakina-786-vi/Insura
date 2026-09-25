@@ -1,10 +1,25 @@
-
 # 🛡️ INSURA — Intelligent Insurance Assistant
-
-> An AI-powered insurance platform that helps users understand their insurance policies, extract important policy information, ask policy-related questions, and explore insurance scenarios through an intelligent conversational experience.
 
 <p align="center">
   <strong>Understand your insurance. Make informed decisions.</strong>
+</p>
+
+<p align="center">
+  An AI-powered insurance assistant that transforms complex insurance policies into an accessible, conversational experience.
+</p>
+
+<p align="center">
+
+![CI](https://img.shields.io/badge/CI-Passing-brightgreen?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3.x-yellow?style=for-the-badge&logo=python)
+![Flask](https://img.shields.io/badge/Backend-Flask-black?style=for-the-badge&logo=flask)
+![n8n](https://img.shields.io/badge/Workflow-n8n-orange?style=for-the-badge&logo=n8n)
+![SurrealDB](https://img.shields.io/badge/Database-SurrealDB-purple?style=for-the-badge)
+![Cognee](https://img.shields.io/badge/Knowledge-Cognee-blueviolet?style=for-the-badge)
+![Groq](https://img.shields.io/badge/AI-Groq-f55036?style=for-the-badge)
+![Sarvam AI](https://img.shields.io/badge/Voice%20%26%20Language-Sarvam%20AI-0f766e?style=for-the-badge)
+
 </p>
 
 ---
@@ -28,6 +43,87 @@ INSURA combines:
 - 📊 Centralized logging and monitoring
 
 The goal is to provide users with an accessible, conversational, and intelligent way to understand their insurance coverage.
+
+---
+## 🏗️ System Architecture
+
+The following diagram illustrates the major components of the INSURA platform.
+
+```mermaid
+flowchart LR
+    User[Authenticated User]
+
+    Frontend[INSURA Frontend UI]
+    Auth[Authentication System]
+
+    Flask[Flask Backend API]
+
+    Upload[Policy PDF Upload]
+    PolicyAPI[Policy Processing API]
+    ChatAPI[Chatbot API]
+    SimAPI[Simulation API]
+
+    n8n[n8n Policy Extraction Workflow]
+
+    SurrealDB[(SurrealDB)]
+    PolicyData[Extracted Policy Data]
+
+    Cognee[Cognee Policy Knowledge Layer]
+    LanceDB[(Cognee LanceDB Storage)]
+
+    Groq[Groq AI]
+    Chatbot[INSURA Chatbot]
+    Simulation[INSURA Simulation Engine]
+
+    Sarvam[Sarvam AI Services]
+    STT[Speech to Text]
+    Translation[Translation]
+    TTS[Text to Speech]
+
+    CloudWatch[Logging and Monitoring]
+
+    User --> Frontend
+    Frontend --> Auth
+    Frontend --> Flask
+
+    Flask --> Upload
+    Flask --> PolicyAPI
+    Flask --> ChatAPI
+    Flask --> SimAPI
+
+    Upload --> n8n
+    PolicyAPI --> n8n
+
+    n8n --> PolicyData
+    PolicyData --> SurrealDB
+
+    SurrealDB --> Cognee
+    Cognee --> LanceDB
+
+    ChatAPI --> Cognee
+    Cognee --> Chatbot
+    Chatbot --> Groq
+
+    SimAPI --> Cognee
+    Cognee --> Simulation
+    Simulation --> Groq
+
+    Frontend --> Sarvam
+    Sarvam --> STT
+    Sarvam --> Translation
+    Sarvam --> TTS
+
+    STT --> ChatAPI
+    Chatbot --> Translation
+    Translation --> TTS
+    TTS --> Frontend
+
+    Flask --> CloudWatch
+    n8n --> CloudWatch
+    Cognee --> CloudWatch
+    Groq --> CloudWatch
+    Sarvam --> CloudWatch
+```
 
 ---
 
@@ -202,88 +298,6 @@ Frontend Audio Output
 Sarvam AI configuration should be managed through environment variables.
 
 API keys must never be hardcoded or committed to the repository.
-
----
-
-## 🏗️ System Architecture
-
-The following diagram illustrates the major components of the INSURA platform.
-
-```mermaid
-flowchart LR
-    User[Authenticated User]
-
-    Frontend[INSURA Frontend UI]
-    Auth[Authentication System]
-
-    Flask[Flask Backend API]
-
-    Upload[Policy PDF Upload]
-    PolicyAPI[Policy Processing API]
-    ChatAPI[Chatbot API]
-    SimAPI[Simulation API]
-
-    n8n[n8n Policy Extraction Workflow]
-
-    SurrealDB[(SurrealDB)]
-    PolicyData[Extracted Policy Data]
-
-    Cognee[Cognee Policy Knowledge Layer]
-    LanceDB[(Cognee LanceDB Storage)]
-
-    Groq[Groq AI]
-    Chatbot[INSURA Chatbot]
-    Simulation[INSURA Simulation Engine]
-
-    Sarvam[Sarvam AI Services]
-    STT[Speech to Text]
-    Translation[Translation]
-    TTS[Text to Speech]
-
-    CloudWatch[Logging and Monitoring]
-
-    User --> Frontend
-    Frontend --> Auth
-    Frontend --> Flask
-
-    Flask --> Upload
-    Flask --> PolicyAPI
-    Flask --> ChatAPI
-    Flask --> SimAPI
-
-    Upload --> n8n
-    PolicyAPI --> n8n
-
-    n8n --> PolicyData
-    PolicyData --> SurrealDB
-
-    SurrealDB --> Cognee
-    Cognee --> LanceDB
-
-    ChatAPI --> Cognee
-    Cognee --> Chatbot
-    Chatbot --> Groq
-
-    SimAPI --> Cognee
-    Cognee --> Simulation
-    Simulation --> Groq
-
-    Frontend --> Sarvam
-    Sarvam --> STT
-    Sarvam --> Translation
-    Sarvam --> TTS
-
-    STT --> ChatAPI
-    Chatbot --> Translation
-    Translation --> TTS
-    TTS --> Frontend
-
-    Flask --> CloudWatch
-    n8n --> CloudWatch
-    Cognee --> CloudWatch
-    Groq --> CloudWatch
-    Sarvam --> CloudWatch
-```
 
 ---
 
