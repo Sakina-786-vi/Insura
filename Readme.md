@@ -1,12 +1,18 @@
-# 🛡️ INSURA — Intelligent Insurance Assistant
+<p align="center">
+  <img src="frontend/n8n/insura-logo.png" alt="INSURA Logo" width="180"/>
+</p>
+
+<h1 align="center">INSURA</h1>
 
 <p align="center">
-  <strong>Understand your insurance. Make informed decisions.</strong>
+  <b>Intelligent Insurance Policy Assistant</b>
 </p>
 
 <p align="center">
-  An AI-powered insurance assistant that transforms complex insurance policies into an accessible, conversational experience.
+  AI-powered insurance policy intelligence, comparison, simulation, and multilingual assistance.
 </p>
+
+---
 
 <p align="center">
 
