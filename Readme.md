@@ -578,15 +578,6 @@ Potential future enhancements include:
 
 ---
 
-## ⚠️ Disclaimer
-
-INSURA is an AI-powered insurance assistance platform.
-
-AI-generated responses are intended to help users understand insurance-related information and should not be treated as a substitute for official policy documents, professional insurance advice, or confirmation from the relevant insurance provider.
-
-Users should verify important coverage, exclusions, claim requirements, and financial decisions against their official policy documentation and insurer.
-
----
 
 ## 🤝 Contributing
 
