@@ -144,10 +144,6 @@ The policy processing pipeline:
 
 🔗 **[View the n8n Policy Extraction Workflow](./frontend/n8n/insura-policy-extraction-workflow.png)**
 
-> The workflow image should be stored in the repository at:
->
-> `frontend/n8n/insura-policy-extraction-workflow.png`
-
 ---
 
 ### 🤖 2. AI Insurance Chatbot
