@@ -772,17 +772,11 @@ This is not specified in your policy
 
 Potential future enhancements include:
 
-- Improved policy comparison
 - Claim document assistance
 - Policy renewal reminders
 - Advanced multilingual support
 - Voice-based policy conversations
-- Policy coverage summaries
-- Improved document validation
 - Enhanced audit logging
-- More detailed policy analytics
-- Automated policy change detection
-- Additional insurance product support
 
 ---
 
