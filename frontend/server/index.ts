@@ -1,4 +1,5 @@
 import express from "express";
+import { createProxyMiddleware } from "http-proxy-middleware";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -9,6 +10,25 @@ const __dirname = path.dirname(__filename);
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  const backendRoutes = ["/api", "/register", "/login", "/logout", "/auth", "/dashboard", "/policy/share"];
+  const backendBaseUrl = (process.env.BACKEND_BASE_URL || "http://127.0.0.1:5000").replace(/\/+$/, "");
+
+  app.use(createProxyMiddleware({
+    target: backendBaseUrl,
+    changeOrigin: true,
+    pathFilter: (pathname) => backendRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`)),
+    on: {
+      error: (_error, _request, response) => {
+        if ("writeHead" in response) {
+          if (response.headersSent) return;
+          response.writeHead(502, { "Content-Type": "application/json" });
+          response.end(JSON.stringify({ error: "Backend service unavailable." }));
+        } else {
+          response.destroy();
+        }
+      },
+    },
+  }));
 
   // Serve static files from dist/public in production
   const staticPath =

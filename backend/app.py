@@ -512,6 +512,7 @@ app.config.from_object(Config)
 app.config["SECRET_KEY"] = Config.FLASK_SECRET_KEY
 app.config["MAX_CONTENT_LENGTH"] = MAX_POLICY_FILE_SIZE
 app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SECURE"] = Config.SESSION_COOKIE_SECURE
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 oauth = register_oauth(app)

@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 
 from dotenv import load_dotenv
 from surrealdb import Surreal
+from surrealdb.errors import NotAllowedError
+from websockets.exceptions import ConnectionClosed
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
@@ -20,16 +22,38 @@ db = Surreal(SURREALDB_URL)
 
 def connect_db():
     try:
-        db.signin({
+        credentials = {
             "username": SURREALDB_USERNAME,
             "password": SURREALDB_PASSWORD,
-        })
+        }
+        try:
+            db.signin(credentials)
+        except NotAllowedError:
+            db.signin({
+                **credentials,
+                "namespace": SURREALDB_NAMESPACE,
+                "database": SURREALDB_DATABASE,
+            })
         db.use(SURREALDB_NAMESPACE, SURREALDB_DATABASE)
         return db
     except Exception as exc:
         raise RuntimeError(
             "Could not connect to SurrealDB. Check that the server is running and the credentials are correct."
         ) from exc
+
+
+def _retry_after_closed_connection(operation):
+    global db
+    try:
+        return operation()
+    except ConnectionClosed:
+        try:
+            db.close()
+        except Exception:
+            pass
+        db = Surreal(SURREALDB_URL)
+        connect_db()
+        return operation()
 
 
 def ensure_user_table():
@@ -433,7 +457,7 @@ def find_user_by_id(user_id):
 
 def create_user(user_data):
     try:
-        return db.create("user", user_data)
+        return _retry_after_closed_connection(lambda: db.create("user", user_data))
     except Exception as exc:
         raise RuntimeError("Could not create the user account in SurrealDB.") from exc
 

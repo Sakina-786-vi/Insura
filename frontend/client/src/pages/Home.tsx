@@ -328,14 +328,13 @@ function ScenarioExperience({ scenarios, completedLearningItems = [], onToast }:
   const isRevealed = Boolean(revealed[currentIndex]);
   const reveal = async () => {
     if (isRevealed) return;
+    setRevealed((items) => ({ ...items, [currentIndex]: true }));
     try {
       await awardLearningXP('learning_scenario', `learning:scenario:${currentIndex}:${fieldText(current, ['scenario', 'scenario_title', 'title'], String(currentIndex))}`);
-    } catch (error) {
-      onToast(error instanceof Error ? error.message : 'Scenario XP could not be saved.');
-      return;
+      onToast(`Scenario ${currentIndex + 1} completed`);
+    } catch {
+      onToast('Guidance revealed, but scenario progress could not be saved.');
     }
-    setRevealed((items) => ({ ...items, [currentIndex]: true }));
-    onToast(`Scenario ${currentIndex + 1} completed`);
   };
   const completed = Object.values(revealed).filter(Boolean).length;
   return <section className="glass mt-5 rounded-[22px] p-5"><div className="section-title"><div><span className="label-caps">Apply what you know</span><h2 className="mt-2 font-display text-[22px] font-semibold">Real-life scenarios</h2><p>Think through the situation, then reveal the policy-grounded next step.</p></div><span className="status-dot teal">{completed} / {scenarios.length} complete</span></div><div className="unit-tabs mb-5">{scenarios.map((scenario, index) => <button key={`scenario-tab-${index}`} onClick={() => setCurrentIndex(index)} className={`unit-tab ${index === currentIndex ? 'active' : ''}`}>Scenario {index + 1}</button>)}</div><article className="glass-soft rounded-[20px] p-5"><span className="label-caps">Scenario {currentIndex + 1} · {fieldText(current, ['concept_name'], 'Policy decision')}</span><h3 className="mt-3 font-display text-[20px] font-semibold">{fieldText(current, ['scenario'], `Scenario ${currentIndex + 1}`)}</h3><div className="mt-5 rounded-[15px] border border-[#8ab3ea18] bg-[#0a1328a6] p-4"><span className="label-caps">What would you do?</span><p className="mt-2 text-[12px] leading-5 text-[#b7c9e3]">Think about the next action that best follows your policy before revealing the guidance.</p></div>{!isRevealed ? <button onClick={reveal} className="btn btn-primary mt-5 rounded-full px-4 py-2.5 text-[11px] font-bold">Reveal policy guidance <ArrowRight size={13} className="ml-1 inline" /></button> : <div className="mt-5 rounded-[15px] border border-[#67dfb533] bg-[#4ed59e0e] p-4 text-[12px] leading-5 text-[#9beacd]"><strong className="block">Scenario completed</strong><p className="mt-2"><span className="label-caps">Recommended action</span><br />{fieldText(current, ['recommended_action'], 'No recommended action was provided.')}</p><p className="mt-3"><span className="label-caps">What to understand</span><br />{fieldText(current, ['what_to_understand'], 'No additional explanation was provided.')}</p></div>}<div className="mt-5 flex items-center justify-between"><button disabled={currentIndex === 0} onClick={() => setCurrentIndex((index) => index - 1)} className="btn btn-ghost rounded-full px-3 py-2 text-[11px] disabled:opacity-40">Previous</button><span className="font-mono text-[10px] text-[#8194b4]">{currentIndex + 1} / {scenarios.length}</span><button disabled={currentIndex === scenarios.length - 1} onClick={() => setCurrentIndex((index) => index + 1)} className="btn btn-ghost rounded-full px-3 py-2 text-[11px] disabled:opacity-40">Next</button></div></article></section>;
@@ -380,14 +379,13 @@ function LearnView({ learning, completedLearningItems = [], loading, generating,
     const correctIndex = options.findIndex((item) => item === correct);
     const selectedIndex = options.findIndex((item) => item === selected);
     const isCorrect = correct === selected || (correctIndex >= 0 && correctIndex === selectedIndex) || correct === String.fromCharCode(65 + selectedIndex);
+    setAnswers((items) => ({ ...items, [index]: selected }));
     try {
       await awardLearningXP(isCorrect ? 'learning_question_correct' : 'learning_question_wrong', `learning:question:${index}:${fieldText(mcq, ['question', 'prompt'], String(index))}`);
-    } catch (error) {
-      onToast(error instanceof Error ? error.message : 'Question XP could not be saved.');
-      return;
+      onToast(isCorrect ? '+10 XP · Correct answer' : '-5 XP · Review this answer');
+    } catch {
+      onToast('Answer selected, but XP could not be saved.');
     }
-    setAnswers((items) => ({ ...items, [index]: selected }));
-    onToast(isCorrect ? '+10 XP · Correct answer' : '-5 XP · Review this answer');
   };
   const answerResult = (mcq: Record<string, any>, index: number) => { const selected = answers[index]; if (selected === undefined) return null; const correct = displayValue(mcq.correct_answer); const options = Array.isArray(mcq.options) ? mcq.options.map(displayValue) : []; const correctIndex = options.findIndex((option) => option === correct); const selectedIndex = options.findIndex((option) => option === selected); return { isCorrect: correct === selected || (correctIndex >= 0 && correctIndex === selectedIndex) || correct === String.fromCharCode(65 + selectedIndex), correct }; };
   if (loading) return <section className="glass rounded-[22px] p-6 text-[12px] text-[#9bb0d0]">Loading your saved learning…</section>;
@@ -713,7 +711,7 @@ function AuthModal({ mode, setMode, onClose, onSuccess }: { mode: AuthMode; setM
       });
 
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
+      if (!response.ok || data.success !== true) {
         setError(data.error || 'Something went wrong. Please try again.');
         return;
       }
