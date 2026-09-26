@@ -1,0 +1,24 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://insura-backend.onrender.com/api/:path*"
+    },
+    {
+      "source": "/login",
+      "destination": "https://insura-backend.onrender.com/login"
+    },
+    {
+      "source": "/register",
+      "destination": "https://insura-backend.onrender.com/register"
+    },
+    {
+      "source": "/logout",
+      "destination": "https://insura-backend.onrender.com/logout"
+    },
+    {
+      "source": "/auth/:path*",
+      "destination": "https://insura-backend.onrender.com/auth/:path*"
+    }
+  ]
+}
