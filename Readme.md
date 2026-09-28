@@ -560,7 +560,6 @@ npm run dev
 | n8n Policy Extraction Workflow | [View Workflow Image](./frontend/n8n/insura-policy-extraction-workflow.png) |
 | n8n Policy Comparison Workflow | [View Workflow Image](./frontend/n8n/insura-policy-comparison-workflow.png) |
 | n8n Learning Generation Workflow | [View Workflow Image](./frontend/n8n/insura-learning-generation-workflow.png) |
-| System Architecture | [Architecture Documentation](./docs/architecture.md) |
 | Backend | [Backend Directory](./backend/) |
 | Frontend | [Frontend Directory](./frontend/) |
 
